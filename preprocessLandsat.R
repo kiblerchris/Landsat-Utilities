@@ -54,18 +54,18 @@ preprocessLandsat <- function(inputPath,
     
     ### Overwrite Invalid Pixel Values
     
-    #Set all bad retrievals to NA
-    image_brick <- reclassify(image_brick, c(-Inf, 0, NA))
-    image_brick <- reclassify(image_brick, c(10000, Inf, NA))
+    vals <- values(image_brick)
+    vals[vals < 0] <- NA
+    vals[vals > 10000] <- NA
     
     #Set all bands to NA if any band is NA for a pixel
     if(allBands == TRUE){
-      
-      vals <- values(image_brick)
+
       vals[rowSums(is.na(vals)) > 0, ] <- NA
-      image_brick <- setValues(image_brick, vals)
       
     }
+    
+    image_brick <- setValues(image_brick, vals)
     
     ### Mask Clouds
     
